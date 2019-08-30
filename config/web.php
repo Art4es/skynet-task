@@ -16,6 +16,17 @@ $config = [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'TpAh6-OofFbuhT5MXu1Ke6NNt0WeuH0H',
         ],
+        'response' => [
+            'class' => 'yii\web\Response',
+            'on beforeSend' => function ($event) {
+                $response = $event->sender;
+                $response->data = array_merge(
+                    ['result' => $response->isSuccessful ? 'ok' : 'error'],
+                    $response->data
+                );
+                $response->statusCode = 200;
+            },
+        ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
