@@ -18,6 +18,7 @@ $config = [
         ],
         'response' => [
             'class' => 'yii\web\Response',
+            'format' => yii\web\Response::FORMAT_JSON,
             'on beforeSend' => function ($event) {
                 $response = $event->sender;
                 $response->data = array_merge(
@@ -60,6 +61,7 @@ $config = [
             'enableStrictParsing' => true,
             'rules' => [
                 'GET users/<user_id>/services/<service_id>/tarifs' => 'tarif/tarifs',
+                'PUT users/<user_id>/services/<service_id>/tarif' => 'tarif/tarif'
             ]
         ],
     ],

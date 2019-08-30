@@ -6,9 +6,7 @@ namespace app\controllers;
 
 use app\models\Service;
 use app\models\Tarif;
-use yii\helpers\ArrayHelper;
 use yii\web\Controller;
-use yii\web\Response;
 
 class TarifController extends Controller
 {
@@ -33,15 +31,11 @@ class TarifController extends Controller
         return ['tarifs' => $result];
     }
 
-    public function behaviors()
+    public function actionTarif($user_id, $service_id)
     {
-        return ArrayHelper::merge(parent::behaviors(), [
-            [
-                'class' => 'yii\filters\ContentNegotiator',
-                'formats' => [
-                    'application/json' => Response::FORMAT_JSON,
-                ],
-            ],
-        ]);
+        $request = \Yii::$app->request;
+        if ($request->isPut) {
+            return $request->post();
+        }
     }
 }
