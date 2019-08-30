@@ -16,20 +16,21 @@ class TarifController extends Controller
 
     public function actionTarifs($user_id, $service_id)
     {
-        $service = Service::find()
+        $services = Service::find()
             ->with('tarif')
             ->where(['user_id' => $user_id, 'ID' => $service_id])
-            ->one();
-        $tarif = $service->tarif;
-        $tarifs = Tarif::findAll(['tarif_group_id' => $tarif->tarif_group_id]);
-        return [
-            'tarifs' => [
+            ->all();
+        $result = [];
+        foreach ($services as $service) {
+            $tarif = $service->tarif;
+            $result[] = [
                 'title' => $tarif->title,
                 'link' => $tarif->link,
                 'speed' => $tarif->speed,
-                'tarifs' => $tarifs
-            ]
-        ];
+                'tarifs' => Tarif::findAll(['tarif_group_id' => $tarif->tarif_group_id])
+            ];
+        }
+        return ['tarifs' => $result];
     }
 
     public function behaviors()
