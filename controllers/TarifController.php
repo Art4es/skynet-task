@@ -20,15 +20,21 @@ class TarifController extends Controller
             ->all();
         $result = [];
         foreach ($services as $service) {
-            $tarif = $service->tarif;
-            $result[] = [
-                'title' => $tarif->title,
-                'link' => $tarif->link,
-                'speed' => $tarif->speed,
-                'tarifs' => Tarif::findAll(['tarif_group_id' => $tarif->tarif_group_id])
-            ];
+            $result[] = $this->prepareTarifBlock($service);
         }
         return ['tarifs' => $result];
+    }
+
+    private function prepareTarifBlock(Service $service)
+    {
+        $tarif = $service->tarif;
+        $tarif->scenario = Tarif::SCENARIO_SHORT_VIEW;
+        $same_group_tarifs = Tarif::findAll(['tarif_group_id' => $tarif->tarif_group_id]);
+        array_walk($same_group_tarifs, function (Tarif $tarif) {
+            $tarif->scenario = Tarif::SCENARIO_EXTENDED_VIEW;
+        });
+        $block = $tarif->toArray();
+        return array_merge($block, ['tarifs' => $same_group_tarifs]);
     }
 
     public function actionTarif($user_id, $service_id)
