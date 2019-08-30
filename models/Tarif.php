@@ -87,7 +87,11 @@ class Tarif extends ActiveRecord
         return $this->formats()[$property_name];
     }
 
-    private function getNewPayday()
+    /**
+     * @return \DateTimeImmutable
+     * @throws \Exception
+     */
+    public function getNewPayday()
     {
         $current_date = new \DateTimeImmutable();
         $current_midnight = $current_date->setTime(0, 0, 0, 0);

@@ -16,16 +16,21 @@ $config = [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'TpAh6-OofFbuhT5MXu1Ke6NNt0WeuH0H',
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ]
         ],
         'response' => [
             'class' => 'yii\web\Response',
             'format' => yii\web\Response::FORMAT_JSON,
             'on beforeSend' => function ($event) {
                 $response = $event->sender;
-                $response->data = array_merge(
-                    ['result' => $response->isSuccessful ? 'ok' : 'error'],
-                    $response->data
-                );
+                $response_additional = ['result' => ($response->isSuccessful) ? 'ok' : 'error'];
+                if (empty($response->data) || !$response->isSuccessful) {
+                    $response->data = $response_additional;
+                } else {
+                    $response->data = array_merge($response_additional, $response->data);
+                }
                 $response->statusCode = 200;
             },
         ],
